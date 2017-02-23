@@ -1,12 +1,12 @@
 //
-//  JZJDownloadManager.m
+//  JZJUploadManager.m
 //  URLSessionTest
 //
 //  Created by 景中杰 on 17/2/23.
 //  Copyright © 2017年 MQL. All rights reserved.
 //
 
-#import "JZJDownloadManager.h"
+#import "JZJUploadManager.h"
 
 #ifndef NSFoundationVersionNumber_iOS_8_0
 #define NSFoundationVersionNumber_With_Fixed_5871104061079552_bug 1140.11
@@ -34,14 +34,14 @@ static void url_session_manager_create_task_safely(dispatch_block_t block) {
 
 static NSString * const JZJDownloadManagerLockName = @"com.jingzhongjie.networking.download.manager.lock";
 
-@interface JZJDownloadHandler : NSObject
+@interface JZJUploadHandler : NSObject
 
 @property(nonatomic, strong)NSURLSessionDataTask *dataTask;
 @property(nonatomic, copy)NSURL *url;           //文件资源地址
 @property(nonatomic, copy)NSString *targetPath; //文件存放路径
-@property(nonatomic, copy)JZDownloadCompletionHandler successBlock;
-@property(nonatomic, copy)JZDownloadFailureHandler failureBlock;
-@property(nonatomic, copy)JZDownloadProgressHandler progressBlock;
+@property(nonatomic, copy)JZUploadCompletionHandler successBlock;
+@property(nonatomic, copy)JZUploadFailureHandler failureBlock;
+@property(nonatomic, copy)JZUploadProgressHandler progressBlock;
 @property(nonatomic, retain)NSError *error; //请求出错
 @property(nonatomic, assign)int64_t totalContentLength;             //文件总大小
 @property(nonatomic, assign)int64_t totalReceivedContentLength;     //已下载大小
@@ -50,7 +50,7 @@ static NSString * const JZJDownloadManagerLockName = @"com.jingzhongjie.networki
 
 @end
 
-@implementation JZJDownloadHandler
+@implementation JZJUploadHandler
 
 -(instancetype)initWithTask:(NSURLSessionDataTask *)dataTask
 {
@@ -63,9 +63,9 @@ static NSString * const JZJDownloadManagerLockName = @"com.jingzhongjie.networki
 
 @end
 
-static JZJDownloadManager *instance = nil;
+static JZJUploadManager *instance = nil;
 
-@interface JZJDownloadManager ()<NSURLSessionDelegate, NSURLSessionTaskDelegate>
+@interface JZJUploadManager ()<NSURLSessionDelegate, NSURLSessionTaskDelegate>
 
 @property(nonatomic, strong)NSURLSession *session;
 @property(nonatomic, strong)NSOperationQueue *operationQueue;
@@ -74,13 +74,13 @@ static JZJDownloadManager *instance = nil;
 
 @end
 
-@implementation JZJDownloadManager
+@implementation JZJUploadManager
 
 +(instancetype)shareInstance
 {
     @synchronized (instance) {
         if (!instance) {
-            instance = [[JZJDownloadManager alloc] init];
+            instance = [[JZJUploadManager alloc] init];
         }
         return instance;
     }
@@ -97,9 +97,9 @@ static JZJDownloadManager *instance = nil;
 
 -(NSURLSessionDataTask *)downloadWithURL:(NSURL *)url
                               targetPath:(NSString *)targetPath
-                                 success:(JZDownloadCompletionHandler)success
-                                 failure:(JZDownloadFailureHandler)failure
-                                progress:(JZDownloadProgressHandler)progress
+                                 success:(JZUploadCompletionHandler)success
+                                 failure:(JZUploadFailureHandler)failure
+                                progress:(JZUploadProgressHandler)progress
 {
     long long downloadedBytes = [self _fileSizeForPath:targetPath];
     
@@ -129,7 +129,7 @@ static JZJDownloadManager *instance = nil;
 
 - (void)cancelWithTask:(NSURLSessionTask *)task
 {
-    JZJDownloadHandler *handler = [self _handlerForTask:task];
+    JZJUploadHandler *handler = [self _handlerForTask:task];
     
     if (handler) {
         [handler.dataTask cancel];
@@ -202,12 +202,12 @@ static JZJDownloadManager *instance = nil;
 -(void)_addHandlerForDataTask:(NSURLSessionDataTask *)dataTask
                           url:(NSURL *)url
                    targetPath:(NSString *)targetPath
-                      success:(JZDownloadCompletionHandler)success
-                      failure:(JZDownloadFailureHandler)failure
-                     progress:(JZDownloadProgressHandler)progress
+                      success:(JZUploadCompletionHandler)success
+                      failure:(JZUploadFailureHandler)failure
+                     progress:(JZUploadProgressHandler)progress
               downloadedBytes:(int64_t)downloadedBytes
 {
-    JZJDownloadHandler *handler = [[JZJDownloadHandler alloc] initWithTask:dataTask];
+    JZJUploadHandler *handler = [[JZJUploadHandler alloc] initWithTask:dataTask];
     
     handler.url = url;
     handler.targetPath = targetPath;
@@ -221,7 +221,7 @@ static JZJDownloadManager *instance = nil;
     [self _addHandler:handler];
 }
 
-- (void)_addHandler:(JZJDownloadHandler *)handler
+- (void)_addHandler:(JZJUploadHandler *)handler
 {
     NSParameterAssert(handler);
     
@@ -230,11 +230,11 @@ static JZJDownloadManager *instance = nil;
     [self.lock unlock];
 }
 
--(JZJDownloadHandler *)_handlerForTask:(NSURLSessionTask *)task
+-(JZJUploadHandler *)_handlerForTask:(NSURLSessionTask *)task
 {
     NSParameterAssert(task);
     
-    JZJDownloadHandler *handler = nil;
+    JZJUploadHandler *handler = nil;
     [self.lock lock];
     handler = self.handlerDict[@(task.taskIdentifier)];
     [self.lock unlock];
@@ -242,7 +242,7 @@ static JZJDownloadManager *instance = nil;
     return handler;
 }
 
--(void)_removeHandler:(JZJDownloadHandler *)handler
+-(void)_removeHandler:(JZJUploadHandler *)handler
 {
     [self.lock lock];
     [self.handlerDict removeObjectForKey:@(handler.dataTask.taskIdentifier)];
@@ -270,7 +270,7 @@ static JZJDownloadManager *instance = nil;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didCompleteWithError:(nullable NSError *)error
 {
-    JZJDownloadHandler *handler = [self _handlerForTask:task];
+    JZJUploadHandler *handler = [self _handlerForTask:task];
     
     if (error == nil && handler.error == nil)
     {
@@ -295,7 +295,7 @@ didCompleteWithError:(nullable NSError *)error
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
-    JZJDownloadHandler *handler = [self _handlerForTask:dataTask];
+    JZJUploadHandler *handler = [self _handlerForTask:dataTask];
     //根据status code的不同，做相应的处理
     NSHTTPURLResponse *response = (NSHTTPURLResponse*)dataTask.response;
     if (response.statusCode == 200) {

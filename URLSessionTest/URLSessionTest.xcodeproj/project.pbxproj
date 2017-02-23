@@ -15,6 +15,7 @@
 		2281AC721BC8B5E500761400 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2281AC701BC8B5E500761400 /* LaunchScreen.storyboard */; };
 		4EA886DB1E5D3E5F00F21870 /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA886CC1E5D3E4900F21870 /* AFNetworking.framework */; };
 		4EC1C2E81E5EE7DA000FD63E /* JZJDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC1C2E71E5EE7DA000FD63E /* JZJDownloadManager.m */; };
+		4EC1C2EC1E5EFC0D000FD63E /* JZJUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC1C2EB1E5EFC0D000FD63E /* JZJUploadManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,8 @@
 		4EA886C11E5D3E4900F21870 /* AFNetworking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AFNetworking.xcodeproj; path = "AFNetworking-master/AFNetworking.xcodeproj"; sourceTree = "<group>"; };
 		4EC1C2E61E5EE7DA000FD63E /* JZJDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZJDownloadManager.h; sourceTree = "<group>"; };
 		4EC1C2E71E5EE7DA000FD63E /* JZJDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JZJDownloadManager.m; sourceTree = "<group>"; };
+		4EC1C2EA1E5EFC0D000FD63E /* JZJUploadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZJUploadManager.h; sourceTree = "<group>"; };
+		4EC1C2EB1E5EFC0D000FD63E /* JZJUploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JZJUploadManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,8 @@
 		4EC1C2E51E5EE7DA000FD63E /* URLSessionManager */ = {
 			isa = PBXGroup;
 			children = (
+				4EC1C2EA1E5EFC0D000FD63E /* JZJUploadManager.h */,
+				4EC1C2EB1E5EFC0D000FD63E /* JZJUploadManager.m */,
 				4EC1C2E61E5EE7DA000FD63E /* JZJDownloadManager.h */,
 				4EC1C2E71E5EE7DA000FD63E /* JZJDownloadManager.m */,
 			);
@@ -300,6 +305,7 @@
 			files = (
 				4EC1C2E81E5EE7DA000FD63E /* JZJDownloadManager.m in Sources */,
 				2281AC6A1BC8B5E500761400 /* ViewController.m in Sources */,
+				4EC1C2EC1E5EFC0D000FD63E /* JZJUploadManager.m in Sources */,
 				2281AC671BC8B5E500761400 /* AppDelegate.m in Sources */,
 				2281AC641BC8B5E500761400 /* main.m in Sources */,
 			);
