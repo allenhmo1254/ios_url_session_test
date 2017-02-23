@@ -110,6 +110,10 @@ static JZJUploadManager *instance = nil;
         dataTask = [self.session dataTaskWithRequest:request];
     });
     
+    [self.session uploadTaskWithRequest:request fromFile:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+    }];
+    
     [self _addHandlerForDataTask:dataTask
                              url:url
                       targetPath:targetPath
@@ -288,6 +292,19 @@ didCompleteWithError:(nullable NSError *)error
     {
         handler.successBlock();
     }
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
+{
+    JZJUploadHandler *handler = [self _handlerForTask:task];
+    
+    handler.totalReceivedContentLength = totalBytesSent;
+    handler.totalContentLength = totalBytesExpectedToSend;
+    
+    handler.progressBlock(handler.totalReceivedContentLength, handler.totalContentLength);
 }
 
 #pragma mark -- NSURLSessionDataDelegate
