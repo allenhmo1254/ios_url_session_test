@@ -16,11 +16,11 @@ typedef void (^JZUploadProgressHandler)(int64_t totalReceivedContentLength, int6
 
 +(instancetype)shareInstance;
 
--(NSURLSessionDataTask *)downloadWithURL:(NSURL *)url
-                              targetPath:(NSString *)targetPath
-                                 success:(JZUploadCompletionHandler)success
-                                 failure:(JZUploadFailureHandler)failure
-                                progress:(JZUploadProgressHandler)progress;
+-(NSURLSessionDataTask *)uploadWithURL:(NSURL *)url
+                              fromFile:(NSString *)file
+                               success:(JZUploadCompletionHandler)success
+                               failure:(JZUploadFailureHandler)failure
+                              progress:(JZUploadProgressHandler)progress;
 
 - (void)cancel;
 

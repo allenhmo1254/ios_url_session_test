@@ -65,7 +65,8 @@ static NSString * const JZJDownloadManagerLockName = @"com.jingzhongjie.networki
 
 static JZJUploadManager *instance = nil;
 
-@interface JZJUploadManager ()<NSURLSessionDelegate, NSURLSessionTaskDelegate>
+@interface JZJUploadManager ()<NSURLSessionDataDelegate>
+//<NSURLSessionDelegate, NSURLSessionTaskDelegate>
 
 @property(nonatomic, strong)NSURLSession *session;
 @property(nonatomic, strong)NSOperationQueue *operationQueue;
@@ -95,28 +96,24 @@ static JZJUploadManager *instance = nil;
     return self;
 }
 
--(NSURLSessionDataTask *)downloadWithURL:(NSURL *)url
-                              targetPath:(NSString *)targetPath
-                                 success:(JZUploadCompletionHandler)success
-                                 failure:(JZUploadFailureHandler)failure
-                                progress:(JZUploadProgressHandler)progress
+-(NSURLSessionDataTask *)uploadWithURL:(NSURL *)url
+                              fromFile:(NSString *)file
+                               success:(JZUploadCompletionHandler)success
+                               failure:(JZUploadFailureHandler)failure
+                              progress:(JZUploadProgressHandler)progress
 {
-    long long downloadedBytes = [self _fileSizeForPath:targetPath];
+    long long downloadedBytes = [self _fileSizeForPath:file];
     
-    NSURLRequest *request = [self _createRequestWithURL:url targetPath:targetPath downloadedBytes:downloadedBytes];
+    NSURLRequest *request = [self _createRequestWithURL:url targetPath:file downloadedBytes:downloadedBytes];
     
     __block NSURLSessionDataTask *dataTask = nil;
     url_session_manager_create_task_safely(^{
-        dataTask = [self.session dataTaskWithRequest:request];
+        dataTask = [self.session uploadTaskWithRequest:request fromFile:[NSURL URLWithString:file]];
     });
-    
-    [self.session uploadTaskWithRequest:request fromFile:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-    }];
     
     [self _addHandlerForDataTask:dataTask
                              url:url
-                      targetPath:targetPath
+                      targetPath:file
                          success:success
                          failure:failure
                         progress:progress
