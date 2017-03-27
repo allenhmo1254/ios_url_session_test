@@ -292,7 +292,8 @@ didCompleteWithError:(nullable NSError *)error
 
 #pragma mark -- NSURLSessionDataDelegate
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
     JZJDownloadHandler *handler = [self _handlerForTask:dataTask];
