@@ -91,6 +91,8 @@
         self.lab.text = [NSString stringWithFormat:@"已下载%@%%", strPersent];
     }];
     [downTask resume];
+    
+    NSLog(@"分支练习");
 }
 
 /**
