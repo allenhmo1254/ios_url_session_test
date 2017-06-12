@@ -92,7 +92,7 @@
     }];
     [downTask resume];
     
-    NSLog(@"分支合并练习");
+    NSLog(@"分支合并练习2");
 }
 
 /**
