@@ -146,7 +146,7 @@ static JZJDownloadManager *instance = nil;
     self.lock = [[NSLock alloc] init];
     self.lock.name = JZJDownloadManagerLockName;
     
-    NSLog(@"git测试");
+    NSLog(@"222222222222222222");
     
     [self _initSession];
 }
